@@ -19,3 +19,4 @@ __pycache__/
 *.pyc
 *.pkl
 last_version_*.txt
+alert_runner.log
