@@ -27,6 +27,8 @@ Streamlit Cloud → app → **Settings → Secrets** → paste the template from
 - Telegram token moved out of the code into Secrets
 
 ## Run the alerts on your PC (no Streamlit, market hours only)
+**Easiest:** double-click `setup_windows.bat` — it installs Python + packages, opens the secrets file for you, and sets up auto-start. Or do it by hand:
+
 1. Install Python 3.11+ from python.org (tick **Add Python to PATH**).
 2. In this folder: `pip install -r requirements.txt`
 3. Copy `.streamlit/secrets.toml.example` → `.streamlit/secrets.toml` and fill in your NEW Upstox + Telegram details.
