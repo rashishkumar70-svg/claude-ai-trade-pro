@@ -17,3 +17,5 @@ bt_cache/
 hot_backtest_trades.csv
 __pycache__/
 *.pyc
+*.pkl
+last_version_*.txt
