@@ -20,3 +20,4 @@ __pycache__/
 *.pkl
 last_version_*.txt
 alert_runner.log
+alerts_*.txt

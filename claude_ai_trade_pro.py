@@ -38,7 +38,11 @@ PREM_MAX = 3000.0
 #    until set (or until entered in the app's Telegram settings).
 def _secret(section, key, default=""):
     try:
-        return str((st.secrets.get(section) or {}).get(key) or default)
+        v = str((st.secrets.get(section) or {}).get(key) or default).strip()
+        # template placeholders (PASTE_… / CHAT_ID_…) count as "not set"
+        if any(x in v.upper() for x in ("PASTE_", "YOUR_", "CHAT_ID_")):
+            return default
+        return v
     except Exception:
         return default
 
@@ -3262,9 +3266,8 @@ def up_load():
     #    survives every redeploy (files on the cloud are wiped on each rebuild)
     try:
         if not d.get("atok") and st.secrets and st.secrets.get("upstox"):
-            _s = st.secrets["upstox"]
-            d["atok"] = str(_s.get("atok") or "")
-            d["aexp"] = str(_s.get("aexp") or "")
+            d["atok"] = _secret("upstox", "atok")
+            d["aexp"] = _secret("upstox", "aexp")
     except Exception:
         pass
     return d

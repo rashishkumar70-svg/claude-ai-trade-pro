@@ -73,6 +73,40 @@ def single_instance():
         return None
 
 
+def alerts_file():
+    return os.path.join(HERE, f"alerts_{datetime.now().strftime('%Y-%m-%d')}.txt")
+
+
+def console_alerts(A):
+    """No Telegram configured → print each message here instead, beep, and
+    append it to alerts_YYYY-MM-DD.txt. Returns True so the app records the
+    alert exactly as if it had been sent (follow-ups + honest scoring work)."""
+    import html as _html
+    import re as _re
+
+    def _show(text, buttons=None, keep=False):
+        plain = _html.unescape(_re.sub(r"<[^>]+>", "", str(text))).strip()
+        bar = "─" * 60
+        block = f"\n{bar}\n{plain}\n{bar}"
+        try:
+            print(block, flush=True)
+        except Exception:
+            print(block.encode("ascii", "replace").decode(), flush=True)
+        try:
+            with open(alerts_file(), "a", encoding="utf-8") as f:
+                f.write(f"{datetime.now().strftime('%H:%M:%S')}\n{plain}\n\n")
+        except Exception:
+            pass
+        if os.name == "nt":
+            try:
+                import winsound
+                winsound.MessageBeep()
+            except Exception:
+                pass
+        return True
+    A.tg_send = _show
+
+
 def mins(n):
     return n.hour * 60 + n.minute
 
@@ -104,8 +138,9 @@ def main():
     tok = A.up_auth_token()
     tg = A.tg_load()
     if not (tg.get("token") and tg.get("chat")):
-        log("❌ Telegram token/chat missing in secrets.toml — alerts cannot be sent.")
-        return 1
+        console_alerts(A)                # 🖥️ no Telegram → alerts on this screen
+        log("ℹ️ Telegram not set — SCREEN MODE: every alert is shown in this window "
+            f"(with a beep) and saved to {os.path.basename(alerts_file())}.")
     up_ok = False
     if tok:
         q = A._up_quotes([A.HQ_NIFTY_KEY], tok)
@@ -113,9 +148,9 @@ def main():
     exp = A.up_load().get("aexp") or "?"
     if up_ok:
         A.tg_send(f"✅ <b>PC ALERT ENGINE STARTED</b> · {A.APP_VERSION}\n"
-                  f"Upstox token OK (expires {exp}) · Telegram OK\n"
+                  f"Upstox token OK (expires {exp})\n"
                   f"Runs till ~16:45 today, then stops by itself.")
-        log(f"✅ Health OK — Upstox token valid (expires {exp}), Telegram OK.")
+        log(f"✅ Health OK — Upstox token valid (expires {exp}).")
     else:
         A.tg_send("❌ <b>PC ALERT ENGINE — UPSTOX TOKEN NOT WORKING</b>\n"
                   "Make a new Analytics Token in the Upstox developer portal and put it in "
