@@ -5,8 +5,8 @@
 # Runs the SAME 🚀/💎/🔥/🔄/🎯 hot-alert engine as the app's HOT MOVERS tab,
 # on the same timing, but headless — market hours only:
 #   09:00–09:14  pre-open warm-up (caches history → fast first sweep)
-#   09:15–15:25  live sweeps → Telegram alerts (1 min early, 2 min opening,
-#                4 min rest of day — same cadence as the tab)
+#   09:15–15:25  live sweeps → Telegram alerts (every 1 min till 09:25,
+#                then every 2 min — same cadence as the tab)
 #   15:30–16:45  honest scoring + 📊 daily scorecard to Telegram, then EXIT
 # Weekends and NSE holidays: exits immediately.
 #
@@ -148,8 +148,7 @@ def main():
 
             elif 9 * 60 + 15 <= m <= 15 * 60 + 25:            # live market → sweeps
                 fast0 = m <= 9 * 60 + 25
-                opn = m <= 9 * 60 + 36
-                gap = 60 if fast0 else 120 if opn else 240
+                gap = 60 if fast0 else 120          # 1 min till 09:25, then every 2 min
                 if nowt - last_sweep >= gap:
                     t0 = time.time()
                     try:

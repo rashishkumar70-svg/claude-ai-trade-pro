@@ -7,6 +7,7 @@ Streamlit app: NSE live boards, Hot-Movers alerts (Upstox data) and Telegram pin
 |---|---|
 | `claude_ai_trade_pro.py` | The app (Streamlit Cloud main file) |
 | `alert_runner.py` | **PC alert engine** — hot alerts to Telegram during market hours, no browser |
+| `start_app.bat` | **Full app with all 4 tabs** in your browser (localhost:8501) |
 | `start_alerts.bat` / `install_task.bat` / `remove_task.bat` | Windows: start now / auto-start weekdays 08:55 / remove auto-start |
 | `hot_backtest.py` | Run on your PC to backtest the hot-alert rules on Upstox 1-min data |
 | `requirements.txt` | Packages Streamlit Cloud installs |
@@ -33,7 +34,9 @@ Streamlit Cloud → app → **Settings → Secrets** → paste the template from
 
 It warms up 09:00, sends alerts 09:15–15:20, sends the daily scorecard ~15:46, then stops by itself.
 Weekends/NSE holidays it exits immediately. Log: `alert_runner.log`.
-Run only ONE engine (PC **or** Streamlit Cloud with the Hot tab open) — otherwise every alert arrives twice.
+Want the screen too? Double-click `start_app.bat` — all 4 tabs open in your browser. When the engine is
+running, the Hot tab just SHOWS the engine's results (refreshes every 2 min) and never double-sends.
+Don't run Streamlit Cloud alerts at the same time — otherwise every alert arrives twice.
 
 ## Backtest (on your PC)
 ```

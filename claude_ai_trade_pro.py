@@ -1951,7 +1951,7 @@ def tg_send(text, buttons=None, keep=False):
     return sent_any
 
 
-APP_VERSION = "v14.0 · PRECISION (graded alerts + honest scoring)"
+APP_VERSION = "v14.1 · PRECISION · 2-MIN LIVE"
 
 
 def tg_online_ping():
@@ -9109,6 +9109,16 @@ def maybe_daily_scorecard():
         pass
 
 
+def _pc_engine_running():
+    """True when alert_runner.py is running on this machine (it holds a local port)."""
+    try:
+        import socket as _sk
+        with _sk.create_connection(("127.0.0.1", 47613), timeout=0.3):
+            return True
+    except Exception:
+        return False
+
+
 def hot_movers_tab(ss):
     """🚀 Separate watch-only tab — today's whole-market spikes + exactly WHY
     each one is not on our combo board. No Telegram, no picks, no radar
@@ -9184,11 +9194,20 @@ def hot_movers_tab(ss):
                 #    09:16 candle opens — the earliest moment the 2-candle
                 #    confirm (09:15 close + live 09:16) can fire.
                 _fast0 = (_n.weekday() < 5 and 9 * 60 + 15 <= _om <= 9 * 60 + 25)
-                st_autorefresh(interval=(1 if _fast0 else 2 if _opn else 5) * 60 * 1000,
+                # ⏱ v14: screen + sweep every 2 min all day (1 min 09:15–09:25)
+                st_autorefresh(interval=(1 if _fast0 else 2) * 60 * 1000,
                                key="hot_tick")
-                if _mkt_open:
+                if _mkt_open and _pc_engine_running():
+                    # 🖥️ the PC alert engine is scanning + sending — this page
+                    #    only SHOWS its latest results (no double alerts)
+                    hot = ((rt_load().get("hot") or {}).get("last")) or hot
+                    _sw0 = ((rt_load().get("hot") or {}).get("sw")) or 0
+                    st.caption("🖥️ PC alert engine is running — showing its results "
+                               f"(last sweep {int(max(0, time.time() - _sw0))} s ago). "
+                               "Telegram alerts are sent by the engine, not this page.")
+                elif _mkt_open:
                     _lastsw = ((rt_load().get("hot") or {}).get("sw")) or 0
-                    if time.time() - _lastsw > (60 if _fast0 else 120 if _opn else 240):
+                    if time.time() - _lastsw > (60 if _fast0 else 110):
                         _fresh = hot_scan(tg=_tg_on)    # every click no longer re-sweeps
                         if _fresh.get("err"):
                             hot = ss.get("hot") or hot  # keep the last GOOD view on failure
@@ -10861,7 +10880,7 @@ def main():
                          f"<div style='color:white;font-weight:900;font-size:16px;'>📈{up} · 📉{dn} · {len(drows)} watched</div></div>")
 
     st.markdown(_H(f"""<div class='navbar'><div style='display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;'>
-    <div><span style='font-size:28px;font-weight:900;color:white;'>💹 AI Trader Pro</span>
+    <div><span style='font-size:28px;font-weight:900;color:white;'>💹 Claude AI Trade Pro</span>
     <span style='font-size:14px;color:#93c5fd;margin-left:12px;'>{_esc(APP_VERSION)}</span></div>
     <div style='display:flex;gap:12px;align-items:center;flex-wrap:wrap;'>
     <div style='background:rgba(255,255,255,0.15);border-radius:10px;padding:8px 16px;text-align:center;'>
