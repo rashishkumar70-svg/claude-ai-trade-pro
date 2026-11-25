@@ -1,0 +1,19 @@
+# 🔐 never commit secrets
+.streamlit/secrets.toml
+*.env
+.env
+# app runtime / personal data files (created while the app runs)
+runtime_*.json
+upstox_*.json
+tg_*.json
+telegram_*.json
+trade_journal_*.json
+board_snapshots_*.json
+eod_results_*.json
+hot_univ_*.json
+*_cloud.json
+# backtester output
+bt_cache/
+hot_backtest_trades.csv
+__pycache__/
+*.pyc
