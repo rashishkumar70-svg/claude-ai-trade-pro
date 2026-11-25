@@ -91,7 +91,7 @@ import concurrent.futures
 
 warnings.filterwarnings('ignore')
 
-st.set_page_config(page_title="🎯 Combo Backup (Cloud)", page_icon="☁️",
+st.set_page_config(page_title="Claude AI Trade Pro", page_icon="🎯",
                    layout="wide", initial_sidebar_state="collapsed")
 
 # ============================================================

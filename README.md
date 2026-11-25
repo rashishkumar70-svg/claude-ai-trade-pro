@@ -1,11 +1,11 @@
-# AI Trader Pro v14 — Precision
+# Claude AI Trade Pro (v14 — Precision)
 
 Streamlit app: NSE live boards, Hot-Movers alerts (Upstox data) and Telegram pings.
 
 ## Files
 | File | What it is |
 |---|---|
-| `streamlit_app.py` | The app (Streamlit Cloud main file) |
+| `claude_ai_trade_pro.py` | The app (Streamlit Cloud main file) |
 | `hot_backtest.py` | Run on your PC to backtest the hot-alert rules on Upstox 1-min data |
 | `requirements.txt` | Packages Streamlit Cloud installs |
 | `.streamlit/secrets.toml.example` | Template for Streamlit **Secrets** (no real values) |
